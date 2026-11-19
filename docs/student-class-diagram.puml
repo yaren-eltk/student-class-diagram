@@ -1,0 +1,81 @@
+@startuml StudentClassDiagram
+skinparam classAttributeIconSize 0
+left to right direction
+
+abstract class Person {
+  - id : String
+  - firstName : String
+  - lastName : String
+  - email : String
+  + getFullName() : String
+  + {abstract} getRole() : String
+  + setAddress(street, city, postalCode, country) : void
+}
+
+class Address {
+  - street : String
+  - city : String
+  - postalCode : String
+  - country : String
+}
+
+class Student {
+  + {static} MAX_CREDITS_PER_TERM : int = 30
+  - studentNumber : String
+  - enrollmentYear : int
+  + enroll(course : Course, term : String) : Enrollment
+  + drop(course : Course, term : String) : boolean
+  + calculateGPA() : double
+  + getCompletedCredits() : int
+}
+
+class Instructor {
+  - title : String
+  + assignGrade(e : Enrollment, g : Grade) : void
+}
+
+class Department {
+  - code : String
+  - name : String
+  + addCourse(c : Course) : void
+  + removeCourse(c : Course) : void
+}
+
+class Course {
+  - code : String
+  - title : String
+  - credits : int
+  - capacity : int
+  + isFull() : boolean
+  + getEnrolledStudents() : List<Student>
+}
+
+class Enrollment {
+  - term : String
+  - enrollmentDate : LocalDate
+  - grade : Grade
+}
+
+enum Grade {
+  AA
+  BA
+  BB
+  CB
+  CC
+  DC
+  DD
+  FF
+  + getPoints() : double
+  + isPassing() : boolean
+}
+
+Person <|-- Student
+Person <|-- Instructor
+Person *-- "1" Address : has >
+Department o-- "0..*" Course : offers >
+Department "1" -- "0..*" Student : majorsIn <
+Instructor "1" -- "0..*" Course : teaches >
+Instructor "0..1" -- "0..*" Student : advises >
+(Student, Course) .. Enrollment
+Enrollment --> Grade
+@enduml
